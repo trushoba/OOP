@@ -1,30 +1,32 @@
 using System;
+using System.Collections.Generic;
 
 namespace ShopApp
 {
+    public class Warehouse<T> where T : Product
+    {
+        private List<T> items = new List<T>();
+        public static int Total = 0;
+        public void Add(T item) { items.Add(item); Total++; }
+        public void Show() { foreach (var i in items) i.Display(); }
+    }
+
     public class Product {
-        protected string name;
-        protected double price;
-        public Product(string name, double price) { this.name = name; this.price = price; }
-        public virtual void Display() => Console.WriteLine($"Товар: {name}, Цена: {price}");
+        protected string name; public double price;
+        public Product(string n, double p) { name = n; price = p; }
+        public virtual void Display() => Console.WriteLine($"{name} - {price} р.");
     }
 
     public class Electronics : Product {
-        public int Warranty { get; set; }
-        public Electronics(string n, double p, int w) : base(n, p) => Warranty = w;
-        public override void Display() => Console.WriteLine($"[Электроника] {name}, Гарантия: {Warranty} мес.");
-    }
-
-    public class Clothing : Product {
-        public string Size { get; set; }
-        public Clothing(string n, double p, string s) : base(n, p) => Size = s;
-        public override void Display() => Console.WriteLine($"[Одежда] {name}, Размер: {Size}");
+        public Electronics(string n, double p) : base(n, p) { }
+        public override void Display() => Console.WriteLine($"[Электроника] {name}");
     }
 
     class Program {
         static void Main() {
-            Product[] inventory = { new Electronics("ТВ", 50000, 12), new Clothing("Худи", 3000, "M") };
-            foreach (var item in inventory) item.Display();
+            Warehouse<Product> w = new Warehouse<Product>();
+            w.Add(new Electronics("Наушники", 5000));
+            w.Show();
             Console.ReadKey();
         }
     }
